@@ -92,8 +92,8 @@ var Engine = (function(global) {
     // they encountered.
     function checkCollisions() {
         allEnemies.forEach(function(enemy) {
-            if(player.row !== enemy.row) return;
-            if(Math.abs(enemy.x - player.x) * 2 < (ENEMY_WIDTH + PLAYER_WIDTH)) {
+            if (player.row !== enemy.row) return;
+            if (Math.abs(enemy.x - player.x) * 2 < (ENEMY_WIDTH + PLAYER_WIDTH)) {
                 player.reset();
                 player.giveAllPrizes();
                 prizeCounter.innerHTML = 0;

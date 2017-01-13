@@ -64,19 +64,35 @@ Player.prototype.update = function() {
 Player.prototype.handleInput = function(key) {
     // checks for boundaries first, if player won't overpass
     // change location and update otherwise exit from method.
-    switch(key) {
-    case 'up':
-        if(this.row > 0) { this.row--; } else { return; }
-        break;
-    case 'down':
-        if(this.row < 5) { this.row++; } else { return; }
-        break;
-    case 'left':
-        if(this.col > 0) { this.col--; } else { return; }
-        break;
-    case 'right':
-        if(this.col < 4) { this.col++; } else { return; }
-        break;
+    switch (key) {
+        case 'up':
+            if (this.row > 0) {
+                this.row--;
+            } else {
+                return;
+            }
+            break;
+        case 'down':
+            if (this.row < 5) {
+                this.row++;
+            } else {
+                return;
+            }
+            break;
+        case 'left':
+            if (this.col > 0) {
+                this.col--;
+            } else {
+                return;
+            }
+            break;
+        case 'right':
+            if (this.col < 4) {
+                this.col++;
+            } else {
+                return;
+            }
+            break;
     }
 };
 
