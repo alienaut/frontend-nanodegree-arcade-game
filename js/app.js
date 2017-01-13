@@ -1,25 +1,33 @@
-var ENEMY_SPEED = 100,
+var SLOW_ENEMY_SPEED = 100,
+    FAST_ENEMY_SPEED = 150,
+    VERY_FAST_ENEMY_SPEED = 300,
     CANVAS_WIDTH = 505,
-    ENEMY_HEIGHT = 171,
     CELL_WIDTH = 101,
+    ENEMY_LEFT_BOUNDARY = -200,
+    ENEMY_RIGHT_BOUNDARY = CANVAS_WIDTH + 200,
     CELL_HEIGHT_PADDING = 20,
     CELL_HEIGHT = 83;
 
 // Ancestor class for enemies and player.
 var Creature = function(sprite) {
     this.sprite = sprite;
-}
+};
 
 // Draw a creature on the screen, required method for game
 Creature.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 // Enemies our player must avoid
-var Enemy = function(row, sprite) {
-    Creature.call(this, sprite);
+var Enemy = function(row, speed, sprite) {
+    Creature.call(this, 'images/enemy-bug.png');
+    this.speed = {
+        'slow': SLOW_ENEMY_SPEED,
+        'fast': FAST_ENEMY_SPEED,
+        'very-fast': VERY_FAST_ENEMY_SPEED
+    }[speed];
     this.row = row;
-    this.x = 0;
+    this.x = Math.random() * (ENEMY_RIGHT_BOUNDARY - ENEMY_LEFT_BOUNDARY) + ENEMY_LEFT_BOUNDARY;
     this.y = row * CELL_HEIGHT - CELL_HEIGHT_PADDING;
 };
 
@@ -32,7 +40,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = this.x < CANVAS_WIDTH ? this.x + ENEMY_SPEED * (dt) : 0;
+    this.x = this.x < ENEMY_RIGHT_BOUNDARY ? this.x + this.speed * (dt) : ENEMY_LEFT_BOUNDARY;
 };
 
 // Now write your own player class
@@ -42,7 +50,8 @@ var Player = function(sprite) {
     Creature.call(this, sprite);
     this.col = 2;
     this.row = 4;
-}
+    this.keysCount = 0;
+};
 
 Player.prototype = Object.create(Creature.prototype);
 Player.constructor = Player;
@@ -50,7 +59,7 @@ Player.constructor = Player;
 Player.prototype.update = function() {
     this.x = this.col * CELL_WIDTH;
     this.y = this.row * CELL_HEIGHT - CELL_HEIGHT_PADDING;
-}
+};
 
 Player.prototype.handleInput = function(key) {
     // checks for boundaries first, if player won't overpass
@@ -63,29 +72,35 @@ Player.prototype.handleInput = function(key) {
         if(this.row < 5) { this.row++; } else { return; }
         break;
     case 'left':
-        if(this.col > 0) { this.col-- } else { return; }
+        if(this.col > 0) { this.col--; } else { return; }
         break;
     case 'right':
-        if(this.col < 4) { this.col++ } else { return; }
+        if(this.col < 4) { this.col++; } else { return; }
         break;
     }
-
-    // Always updates if player is in boundaries.
-    this.update();
-}
+};
 
 Player.prototype.reset = function() {
     this.col = 2;
     this.row = 4;
-    player.update();
-}
+};
+
+Player.prototype.takePrize = function() {
+    this.prizeCount++;
+};
+
+Player.prototype.giveAllPrizes = function() {
+    this.prizeCount = 0;
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [
-    new Enemy(1, 'images/enemy-bug.png'),
-    new Enemy(2, 'images/enemy-bug.png')
+    new Enemy(1, 'slow'),
+    new Enemy(2, 'fast'),
+    new Enemy(2, 'very-fast'),
+    new Enemy(3, 'very-fast')
 ];
 
 var player = new Player('images/char-boy.png');

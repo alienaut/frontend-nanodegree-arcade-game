@@ -14,6 +14,9 @@
  * a little simpler to work with.
  */
 
+var ENEMY_WIDTH = 80,
+    PLAYER_WIDTH = 70;
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -23,6 +26,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        prizeCounter = document.querySelector('.prize-counter'),
         lastTime;
 
     canvas.width = 505;
@@ -79,8 +83,30 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+        checkForFinish();
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+
+    // first check if player and enemy in save row, if so calculate if
+    // they encountered.
+    function checkCollisions() {
+        allEnemies.forEach(function(enemy) {
+            if(player.row !== enemy.row) return;
+            if(Math.abs(enemy.x - player.x) * 2 < (ENEMY_WIDTH + PLAYER_WIDTH)) {
+                player.reset();
+                player.giveAllPrizes();
+                prizeCounter.innerHTML = 0;
+            }
+        });
+    }
+
+    function checkForFinish() {
+        if(player.row === 0){
+            player.reset();
+            player.takePrize();
+            prizeCounter.innerHTML = player.prizeCount;
+        }
     }
 
     /* This is called by the update function and loops through all of the
