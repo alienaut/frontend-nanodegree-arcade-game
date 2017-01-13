@@ -74,13 +74,7 @@ var Engine = (function(global) {
     }
 
     /* This function is called by main (our game loop) and itself calls all
-     * of the functions which may need to update entity's data. Based on how
-     * you implement your collision detection (when two entities occupy the
-     * same space, for instance when your character should die), you may find
-     * the need to add an additional function call here. For now, we've left
-     * it commented out - you may or may not want to implement this
-     * functionality this way (you could just implement collision detection
-     * on the entities themselves within your app.js file).
+     * of the functions which may need to update entity's data.
      */
     function update(dt) {
         checkForFinish();
@@ -88,8 +82,9 @@ var Engine = (function(global) {
         checkCollisions();
     }
 
-    // first check if player and enemy in save row, if so calculate if
-    // they encountered.
+    /* first check if player and enemy in save row, if so calculate if
+     * they encountered.
+     */
     function checkCollisions() {
         allEnemies.forEach(function(enemy) {
             if (player.row !== enemy.row) return;
@@ -101,6 +96,8 @@ var Engine = (function(global) {
         });
     }
 
+    /* if player reaches to shore update his/her prize count
+     */
     function checkForFinish() {
         if(player.row === 0){
             player.reset();

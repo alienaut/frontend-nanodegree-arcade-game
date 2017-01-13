@@ -27,6 +27,7 @@ var Enemy = function(row, speed, sprite) {
         'very-fast': VERY_FAST_ENEMY_SPEED
     }[speed];
     this.row = row;
+    // Assign random start position between boundaries.
     this.x = Math.random() * (ENEMY_RIGHT_BOUNDARY - ENEMY_LEFT_BOUNDARY) + ENEMY_LEFT_BOUNDARY;
     this.y = row * CELL_HEIGHT - CELL_HEIGHT_PADDING;
 };
@@ -46,8 +47,8 @@ Enemy.prototype.update = function(dt) {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(sprite) {
-    Creature.call(this, sprite);
+var Player = function() {
+    Creature.call(this, 'images/char-boy.png');
     this.col = 2;
     this.row = 4;
     this.keysCount = 0;
@@ -63,7 +64,7 @@ Player.prototype.update = function() {
 
 Player.prototype.handleInput = function(key) {
     // checks for boundaries first, if player won't overpass
-    // change location and update otherwise exit from method.
+    // change location otherwise exit from method.
     switch (key) {
         case 'up':
             if (this.row > 0) {
@@ -96,6 +97,7 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+// places user to its starting location
 Player.prototype.reset = function() {
     this.col = 2;
     this.row = 4;
@@ -109,9 +111,7 @@ Player.prototype.giveAllPrizes = function() {
     this.prizeCount = 0;
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+// New enemies and
 var allEnemies = [
     new Enemy(1, 'slow'),
     new Enemy(2, 'fast'),
@@ -119,7 +119,7 @@ var allEnemies = [
     new Enemy(3, 'very-fast')
 ];
 
-var player = new Player('images/char-boy.png');
+var player = new Player();
 
 
 // This listens for key presses and sends the keys to your
