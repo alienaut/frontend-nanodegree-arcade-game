@@ -51,7 +51,7 @@ var Player = function() {
     Creature.call(this, 'images/char-boy.png');
     this.col = 2;
     this.row = 4;
-    this.keysCount = 0;
+    this.prizeCount = 0;
 };
 
 Player.prototype = Object.create(Creature.prototype);
