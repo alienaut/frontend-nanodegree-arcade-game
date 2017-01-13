@@ -1,12 +1,30 @@
-// Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+var ENEMY_SPEED = 100,
+    CANVAS_WIDTH = 505,
+    ENEMY_HEIGHT = 171,
+    CELL_WIDTH = 101,
+    CELL_HEIGHT_PADDING = 20,
+    CELL_HEIGHT = 83;
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+// Ancestor class for enemies and player.
+var Creature = function(sprite) {
+    this.sprite = sprite;
+}
+
+// Draw a creature on the screen, required method for game
+Creature.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// Enemies our player must avoid
+var Enemy = function(row, sprite) {
+    Creature.call(this, sprite);
+    this.row = row;
+    this.x = 0;
+    this.y = row * CELL_HEIGHT - CELL_HEIGHT_PADDING;
 };
+
+Enemy.prototype = Object.create(Creature.prototype);
+Enemy.constructor = Enemy;
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -14,22 +32,63 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-};
-
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    this.x = this.x < CANVAS_WIDTH ? this.x + ENEMY_SPEED * (dt) : 0;
 };
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function(sprite) {
+    Creature.call(this, sprite);
+    this.col = 2;
+    this.row = 4;
+}
 
+Player.prototype = Object.create(Creature.prototype);
+Player.constructor = Player;
+
+Player.prototype.update = function() {
+    this.x = this.col * CELL_WIDTH;
+    this.y = this.row * CELL_HEIGHT - CELL_HEIGHT_PADDING;
+}
+
+Player.prototype.handleInput = function(key) {
+    // checks for boundaries first, if player won't overpass
+    // change location and update otherwise exit from method.
+    switch(key) {
+    case 'up':
+        if(this.row > 0) { this.row--; } else { return; }
+        break;
+    case 'down':
+        if(this.row < 5) { this.row++; } else { return; }
+        break;
+    case 'left':
+        if(this.col > 0) { this.col-- } else { return; }
+        break;
+    case 'right':
+        if(this.col < 4) { this.col++ } else { return; }
+        break;
+    }
+
+    // Always updates if player is in boundaries.
+    this.update();
+}
+
+Player.prototype.reset = function() {
+    this.col = 2;
+    this.row = 4;
+    player.update();
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [
+    new Enemy(1, 'images/enemy-bug.png'),
+    new Enemy(2, 'images/enemy-bug.png')
+];
 
+var player = new Player('images/char-boy.png');
 
 
 // This listens for key presses and sends the keys to your
